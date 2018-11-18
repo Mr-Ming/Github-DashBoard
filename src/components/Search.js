@@ -8,7 +8,7 @@ const SORT_BY_STARS_QUERY_PARAM = '&order=desc&sort=stars&per_page=25';
 const SORT_BY_FORKS_QUERY_PARAM = '&order=desc&sort=forks&per_page=25';
 
 class Search extends Component {
-	constructor(props) {
+  constructor(props) {
     super(props);
     this.state = {
     	input: '',
@@ -16,102 +16,100 @@ class Search extends Component {
   }
 
   getPopularRepoByStars = (repo) => {
-  	const { onHandlePopularRepoByStars } = this.props;
+    const { onHandlePopularRepoByStars } = this.props;
 
-  	this.searchGithubApi(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_STARS_QUERY_PARAM).then((result) => {
- 			let data = result.items.map(function(element){
- 				return { 
- 					stars: element.stargazers_count,
-	 				repo: element.full_name,
-	 				url: element.html_url
- 				};
- 			});
+    this.searchGithubApi(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_STARS_QUERY_PARAM).then((result) => {
+      let data = result.items.map(function(element){
+        return { 
+          stars: element.stargazers_count,
+          repo: element.full_name,
+          url: element.html_url
+        };
+      });
 
- 			onHandlePopularRepoByStars(data);
-	  });
+      onHandlePopularRepoByStars(data);
+    });
   }
 
   getPopularRepoByForks = (repo) => {
-  	const { onHandlePopularRepoByForks } = this.props;
+    const { onHandlePopularRepoByForks } = this.props;
 
-  	this.searchGithubApi(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM).then((result) => {
- 			let data = result.items.map(function(element){
- 				return { 
- 					forks: element.forks,
-	 				repo: element.full_name,
-	 				url: element.html_url
- 				};
- 			});
+    this.searchGithubApi(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM).then((result) => {
+      let data = result.items.map(function(element){
+        return {
+          forks: element.forks,
+          repo: element.full_name,
+          url: element.html_url
+        };
+      });
 
- 			onHandlePopularRepoByForks(data);
-	  });
+      onHandlePopularRepoByForks(data);
+    });
   }
 
   getRepoWithContributorData(repo) {
-  	const { onHandlePopularRepoByContributors, onHandleTopInternalContributors, onHandleTopExternalContributors } = this.props;
+    const { onHandlePopularRepoByContributors, onHandleTopInternalContributors, onHandleTopExternalContributors } = this.props;
 
     fetch(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM)
-    .then(response => response.json())
-    .then(function (response) {
-      var items = response.items;
+      .then(response => response.json())
+      .then(function (response) {
+        var items = response.items;
 
-      return Promise.all(items.map((item, index) => {
-        return fetch(ENDPOINT_FOR_REPO + item.full_name + '/contributors')
-        	.then(response => response.json())
-          .then(function(response) {
-            item.contributors = response.length;
-            item.contributor = response;
-            return item
+        return Promise.all(items.map((item, index) => {
+          return fetch(ENDPOINT_FOR_REPO + item.full_name + '/contributors')
+                  .then(response => response.json())
+                  .then(function(response) {
+                    item.contributors = response.length;
+                    item.contributor = response;
+                    return item
+                  });
+        }));     
+      })
+      .then(function(items) {
+        const popularRepoByContributors = items.map((element, index) => {
+          return { 
+            contributors:  element.contributors,
+            repo: element.full_name,
+            url: element.html_url
+          }
+        });
+
+        let topInternalContributors = [];
+        let topExternalContributors = [];
+
+        items.forEach(function(parent) {
+          parent.contributor.forEach(function(child) {
+            let existingContributorIndex = -1;
+
+            if (child.type === 'User') {
+              var contributor = topInternalContributors;
+            } else {
+              var contributor = existingContributorIndex;
+            }
+
+            existingContributorIndex = contributor.findIndex(function(obj) {
+              return obj.contributor === child.login
+            });
+
+            if (existingContributorIndex === -1) {
+              contributor.push({
+              	repo: 1,
+              	contributor: child.login,
+              	url: child.html_url
+              })
+            } else {
+              contributor[existingContributorIndex] = {
+              	repo: contributor[existingContributorIndex].repo+1,
+              	contributor: child.login,
+              	url: child.html_url
+              }
+            }
           });
-      }));     
-    })
-    .then(function(items) {
-    	const popularRepoByContributors = items.map((element, index) => {
-    		return { 
-    			contributors:  element.contributors,
-    			repo: element.full_name,
-    			url: element.html_url
-    		}
-    	});
+        });
 
-    	let topInternalContributors = [];
-    	let topExternalContributors = [];
-
-    	items.forEach(function(parent) {
-    		parent.contributor.forEach(function(child) {
-    			
-    			let existingContributorIndex = -1;
-
-    			if (child.type === 'User') {
-    				var contributor = topInternalContributors;
-    			} else {
-    				var contributor = existingContributorIndex;
-    			}
-
-    			existingContributorIndex = contributor.findIndex(function(obj) {
-    				return obj.contributor === child.login
-    			});
-
-    			if (existingContributorIndex === -1) {
-    				contributor.push({
-	    				repo: 1,
-	    				contributor: child.login,
-	    				url: child.html_url
-  					})
-    			} else {
-    				contributor[existingContributorIndex] = {
-    					repo: contributor[existingContributorIndex].repo+1,
-    					contributor: child.login,
-    					url: child.html_url
-    				}
-    			}
-    			
-    		});
-    	});
-
-    	onHandlePopularRepoByContributors(popularRepoByContributors);
-    	onHandleTopInternalContributors(topInternalContributors);
-    	onHandleTopExternalContributors(topExternalContributors);
+      	onHandlePopularRepoByContributors(popularRepoByContributors);
+      	onHandleTopInternalContributors(topInternalContributors);
+      	onHandleTopExternalContributors(topExternalContributors);
     })
     .catch((error) => {
       console.log(error);
@@ -119,42 +117,42 @@ class Search extends Component {
   }
 
   searchGithubApi = (url) => {
-  	return fetch(url)
-  		.then(response => response.json())
-  		.then(function(json){
-  			return json
-  		})
+    return fetch(url)
+            .then(response => response.json())
+            .then(function(json){
+              return json
+            })
   }
 
   handleInputChange = (event) => {
-  	this.setState({input: event.target.value});
+    this.setState({input: event.target.value});
   }
 
-	handleOnSubmit = (event) => {
-		const { input } = this.state;
+  handleOnSubmit = (event) => {
+    const { input } = this.state;
 
-		event.preventDefault();
+    event.preventDefault();
 
-		this.getPopularRepoByStars(input);
-		this.getPopularRepoByForks(input);
-		this.getRepoWithContributorData(input);
-	}
+    this.getPopularRepoByStars(input);
+    this.getPopularRepoByForks(input);
+    this.getRepoWithContributorData(input);
+  }
 
-	render() {
-		return (
-			<div className="Search">
-				<form onSubmit={this.handleOnSubmit}>
-					Github Organization Name:
-					<input
-						type="textbox"
-						placeholder="facebook"
-						onChange={this.handleInputChange}
-	       	/>
-	       	<button>Submit</button>
-       	</form>
-			</div>
-		);
-	}
+  render() {
+    return (
+      <div className="Search">
+        <form onSubmit={this.handleOnSubmit}>
+          Github Organization Name:
+          <input
+            type="textbox"
+            placeholder="facebook"
+            onChange={this.handleInputChange}
+          />
+          <button>Submit</button>
+        </form>
+      </div>
+    );
+  }
 }
 
 export default Search;
