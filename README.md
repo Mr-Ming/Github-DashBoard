@@ -20,4 +20,4 @@ Most popular repositories by:
 ## Future Work
 1. Need to add notification (if someone uses a username instead of an organization name)
 2. Need to add unit test and integration test
-3. Need to improve UI
+3. Need to improve UI (Add lazyloading + flexible grid)
