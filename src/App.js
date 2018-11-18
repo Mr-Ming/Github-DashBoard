@@ -29,11 +29,8 @@ class App extends Component {
   }
 
   handlePopularRepoByContributors = (result) => {
-    //  this need time to fix the sorting
-    //result = result.sort((a,b) => (a.contributors > b.contributors) ? 1 : ((b.contributors > a.contributors) ? -1 : 0));
-    //  end 
+    result.sort((a,b) => (a.contributors < b.contributors) ? 1 : ((b.contributors < a.contributors) ? -1 : 0));
 
-    console.log(result);
     this.setState({
       popularRepoByContributors: result
     })

@@ -47,32 +47,37 @@ class Search extends Component {
 	  });
   }
 
-  getPopularRepoByContributors = (repo) => {
-  	
+  getPopularRepoByContributors(repo) {
   	const { onHandlePopularRepoByContributors } = this.props;
 
-  	var popularRepoByContributor = [];
+    fetch(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM)
+    .then(response => response.json())
+    .then(function (response) {
+      var items = response.items;
 
-  	this.searchGithubApi(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM).then((result) => {
- 			
- 			return Promise.all(result.items.forEach(function(element) {
- 				const url = ENDPOINT_FOR_REPO + element.full_name + '/contributors';
+      return Promise.all(items.map((item, index) => {
+        return fetch(ENDPOINT_FOR_REPO + item.full_name + '/contributors')
+        	.then(response => response.json())
+          .then(function(response) {
+            item.contributors = response.length;
+            return item
+          });
+      }));     
+    })
+    .then(function(items) {
+    	const fullData = items.map((element, index) => {
+    		return { 
+    			contributors:  element.contributors,
+    			repo: element.full_name,
+    			url: element.html_url
+    		}
+    	});
 
- 				fetch(url)
-		  		.then(response => response.json())
-		  		.then(function(json){
-		  			popularRepoByContributor.push({
-		  				'contributors': json.length,
-		  				'repo': element.full_name,
-		  				'url': element.html_url
-	  				})
-		  		})
-			}))
-		});
-
- 			//onHandlePopularRepoByContributors(popularRepoByContributor);
-
-	  console.log (popularRepoByContributor);
+    	onHandlePopularRepoByContributors(fullData);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
   }
 
   searchGithubApi = (url) => {

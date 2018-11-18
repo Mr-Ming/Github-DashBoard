@@ -9,7 +9,7 @@ class RepoByStars extends Component {
 				<div className="Header">
 					Popular Repo By Stars
 				</div>
-				{result && 
+				{result.length > 0 && 
 					result.map((element, i) => {
 						return (
 							<div className="Result" key={"stars__"+i}>

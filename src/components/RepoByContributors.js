@@ -10,14 +10,11 @@ class RepoByContributors extends Component {
 				<div className="Header">
 					Popular Repo By Contributors
 				</div>
-				{
-					result.length
-				}
-				{result.length && 
+				{result.length > 0 && 
 					result.map((element, i) => {
 						return (
 							<div className="Result" key={"contributors__"+i}>
-								{i+1}: <a href="{ url }">{ element.repo }</a> () 
+								{i+1}: <a href="{ url }">{ element.repo }</a> ({element.contributors}) 
 							</div>
 						)
 					})
