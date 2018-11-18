@@ -5,8 +5,8 @@ const ENDPOINT_GITHUB_API = 'https://api.github.com';
 const ENDPOINT_FOR_POPULAR_REPO = ENDPOINT_GITHUB_API + '/search/repositories?q=org:';
 const ENDPOINT_FOR_REPO = ENDPOINT_GITHUB_API + '/repos/';
 const ENDPOINT_FOR_ORGS = ENDPOINT_GITHUB_API + '/orgs/';
-const SORT_BY_STARS_QUERY_PARAM = '&order=desc&sort=stars&per_page=25';
-const SORT_BY_FORKS_QUERY_PARAM = '&order=desc&sort=forks&per_page=25';
+const SORT_BY_STARS_QUERY_PARAM = '&order=desc&sort=stars';
+const SORT_BY_FORKS_QUERY_PARAM = '&order=desc&sort=forks';
 
 class Search extends Component {
   constructor(props) {
