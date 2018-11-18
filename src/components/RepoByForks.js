@@ -9,7 +9,7 @@ class RepoByForks extends Component {
 				<div className="Header">
 					Popular Repo By Forks
 				</div>
-				{result && 
+				{result.length > 0 && 
 					result.map((element, i) => {
 						return (
 							<div className="Result" key={"forks__"+i}>

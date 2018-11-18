@@ -47,28 +47,75 @@ class Search extends Component {
 	  });
   }
 
-  getPopularRepoByContributors = (repo) => {
-  	const { onHandlePopularRepoByContributors } = this.props;
+  getRepoWithContributorData(repo) {
+  	const { onHandlePopularRepoByContributors, onHandleTopInternalContributors, onHandleTopExternalContributors } = this.props;
 
-  	var popularRepoByContributor = [];
+    fetch(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM)
+    .then(response => response.json())
+    .then(function (response) {
+      var items = response.items;
 
-  	this.searchGithubApi(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM).then((result) => {
- 			result.items.forEach(function(element) {
- 				const url = ENDPOINT_FOR_REPO + element.full_name + '/contributors';
+      return Promise.all(items.map((item, index) => {
+        return fetch(ENDPOINT_FOR_REPO + item.full_name + '/contributors')
+        	.then(response => response.json())
+          .then(function(response) {
+            item.contributors = response.length;
+            item.contributor = response;
+            return item
+          });
+      }));     
+    })
+    .then(function(items) {
+    	const popularRepoByContributors = items.map((element, index) => {
+    		return { 
+    			contributors:  element.contributors,
+    			repo: element.full_name,
+    			url: element.html_url
+    		}
+    	});
 
- 				fetch(url)
-		  		.then(response => response.json())
-		  		.then(function(json){
-		  			popularRepoByContributor.push({
-		  				'contributors': json.length,
-		  				'repo': element.full_name,
-		  				'url': element.html_url
-		  			})
-		  		})
- 			});
+    	let topInternalContributors = [];
+    	let topExternalContributors = [];
 
- 			onHandlePopularRepoByContributors(popularRepoByContributor);
-	  });
+    	items.forEach(function(parent) {
+    		parent.contributor.forEach(function(child) {
+    			
+    			let existingContributorIndex = -1;
+
+    			if (child.type === 'User') {
+    				var contributor = topInternalContributors;
+    			} else {
+    				var contributor = existingContributorIndex;
+    			}
+
+    			existingContributorIndex = contributor.findIndex(function(obj) {
+    				return obj.contributor === child.login
+    			});
+
+    			if (existingContributorIndex === -1) {
+    				contributor.push({
+	    				repo: 1,
+	    				contributor: child.login,
+	    				url: child.html_url
+  					})
+    			} else {
+    				contributor[existingContributorIndex] = {
+    					repo: contributor[existingContributorIndex].repo+1,
+    					contributor: child.login,
+    					url: child.html_url
+    				}
+    			}
+    			
+    		});
+    	});
+
+    	onHandlePopularRepoByContributors(popularRepoByContributors);
+    	onHandleTopInternalContributors(topInternalContributors);
+    	onHandleTopExternalContributors(topExternalContributors);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
   }
 
   searchGithubApi = (url) => {
@@ -90,7 +137,7 @@ class Search extends Component {
 
 		this.getPopularRepoByStars(input);
 		this.getPopularRepoByForks(input);
-		this.getPopularRepoByContributors(input);
+		this.getRepoWithContributorData(input);
 	}
 
 	render() {

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Search from './components/Search';
 import RepoByStars from './components/RepoByStars';
 import RepoByForks from './components/RepoByForks';
+import TopInternalContributors from './components/TopInternalContributors';
+import TopExternalContributors from './components/TopExternalContributors';
 import RepoByContributors from './components/RepoByContributors';
 import './css/App.css';
 
@@ -12,6 +14,8 @@ class App extends Component {
       popularRepoByStars: '',
       popularRepoByForks: '',
       popularRepoByContributors: '',
+      topInternalContributors: '',
+      topExternalContributors: ''
     };
   }
 
@@ -29,18 +33,28 @@ class App extends Component {
   }
 
   handlePopularRepoByContributors = (result) => {
-    //  this need time to fix the sorting
-    //result = result.sort((a,b) => (a.contributors > b.contributors) ? 1 : ((b.contributors > a.contributors) ? -1 : 0));
-    //  end 
+    result.sort((a,b) => (a.contributors < b.contributors) ? 1 : ((b.contributors < a.contributors) ? -1 : 0));
 
-    console.log(result);
     this.setState({
       popularRepoByContributors: result
     })
   }
 
+  handleTopInternalContributors = (result) => {
+    result.sort((a,b) => (a.repo < b.repo) ? 1 : ((b.repo < a.repo) ? -1 : 0));
+    this.setState({
+      topInternalContributors: result
+    })
+  }
+
+  handleTopExternalContributors = (result) => {
+    this.setState({
+      topExternalContributors: result
+    })
+  }
+
   render() {
-    const { popularRepoByStars, popularRepoByForks, popularRepoByContributors } = this.state;
+    const { popularRepoByStars, popularRepoByForks, popularRepoByContributors, topInternalContributors, topExternalContributors } = this.state;
 
     return (
       <div className="App">
@@ -48,10 +62,22 @@ class App extends Component {
           onHandlePopularRepoByStars = { this.handlePopularRepoByStars }
           onHandlePopularRepoByForks = { this.handlePopularRepoByForks }
           onHandlePopularRepoByContributors = { this.handlePopularRepoByContributors }
+          onHandleTopInternalContributors = { this.handleTopInternalContributors }
+          onHandleTopExternalContributors = { this.handleTopExternalContributors }
         />
-        <RepoByStars result = { popularRepoByStars }/>
-        <RepoByForks result = { popularRepoByForks }/>
-        <RepoByContributors result = { popularRepoByContributors }/>
+        <div className="Separator">
+          <RepoByStars result = { popularRepoByStars }/>
+          <TopInternalContributors result = { topInternalContributors } />
+        </div>
+        
+        <div className="Separator">
+          <RepoByForks result = { popularRepoByForks }/>
+          <TopExternalContributors result = { topExternalContributors } />
+        </div>  
+
+        <div className="Separator">
+          <RepoByContributors result = { popularRepoByContributors }/>
+        </div>
       </div>
     );
   }

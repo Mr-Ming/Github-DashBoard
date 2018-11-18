@@ -1,9 +1,10 @@
 .RepoByStars {
     background-color: #e8f7de;
     border: 2px solid lightblue;
-    width: 50%;
+    width: 48%;
     padding-bottom: 5px;
     min-height: 100px;
+    float: left;
 }
 
 .RepoByStars .Header {
