@@ -1,0 +1,21 @@
+.RepoByForks {
+    background-color: #e8f7de;
+    border: 2px solid lightblue;
+    width: 50%;
+    padding-bottom: 5px;
+    min-height: 100px;
+    margin-top: 25px;
+}
+
+.RepoByForks .Header {
+    border-bottom: 2px solid lightblue;
+    padding-left: 6px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color: green;
+}
+
+.RepoByForks .Result {
+	line-height: 20px;
+	padding-left: 6px;
+}

@@ -1,0 +1,26 @@
+.Search {
+  border: 2px solid lightblue;
+  margin-bottom: 10px;
+  padding: 6px;
+}
+
+.Search input[type="textbox"] {
+  margin-left: 5px;
+  width: 28%;
+  height: 20px;
+  padding-left: 1%;
+  color: lightseagreen;
+  outline: none;
+}
+
+.Search button {
+  margin-left: 1%;
+  height: 25px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+  background-color: skyblue;
+  outline: none;
+}
