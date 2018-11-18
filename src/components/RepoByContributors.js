@@ -14,7 +14,7 @@ class RepoByContributors extends Component {
           result.map((element, i) => {
             return (
               <div className="Result" key={"contributors__"+i}>
-                {i+1}: <a href="{ url }">{ element.repo }</a> ({element.contributors}) 
+                {i+1}: <a href={ element.url }>{ element.repo }</a> ({element.contributors}) 
               </div>
             )
           })

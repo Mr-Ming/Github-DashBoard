@@ -14,7 +14,7 @@ class RepoByForks extends Component {
 					result.map((element, i) => {
 						return (
 							<div className="Result" key={"forks__"+i}>
-								{i+1}: <a href="{ url }">{ element.repo }</a> ({ element.forks }) 
+								{i+1}: <a href={ element.url }>{ element.repo }</a> ({ element.forks }) 
 							</div>
 						)
 					})
