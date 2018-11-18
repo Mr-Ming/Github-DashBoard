@@ -9,7 +9,7 @@ class TopExternalContributors extends Component {
         <div className="Header">
           Top External Contributors
         </div>
-        {result.length == 0 ? "None" : 
+        {result.length > 0 &&
           result.map((element, i) => {
             return (
               <div className="Result" key={"external_contributors__"+i}>

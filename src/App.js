@@ -20,7 +20,6 @@ class App extends Component {
   }
 
   handlePopularRepoByStars = (result) => {
-    console.log(result.length);
     this.setState({
       popularRepoByStars: result
     })
@@ -48,6 +47,7 @@ class App extends Component {
   }
 
   handleTopExternalContributors = (result) => {
+    result.sort((a,b) => (a.repo < b.repo) ? 1 : ((b.repo < a.repo) ? -1 : 0));
     this.setState({
       topExternalContributors: result
     })

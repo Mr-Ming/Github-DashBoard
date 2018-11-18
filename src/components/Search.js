@@ -3,7 +3,8 @@ import '../css/Search.css';
 
 const ENDPOINT_GITHUB_API = 'https://api.github.com';
 const ENDPOINT_FOR_POPULAR_REPO = ENDPOINT_GITHUB_API + '/search/repositories?q=org:';
-const ENDPOINT_FOR_REPO= ENDPOINT_GITHUB_API + '/repos/';
+const ENDPOINT_FOR_REPO = ENDPOINT_GITHUB_API + '/repos/';
+const ENDPOINT_FOR_ORGS = ENDPOINT_GITHUB_API + '/orgs/';
 const SORT_BY_STARS_QUERY_PARAM = '&order=desc&sort=stars&per_page=25';
 const SORT_BY_FORKS_QUERY_PARAM = '&order=desc&sort=forks&per_page=25';
 
@@ -11,7 +12,7 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    	input: '',
+    	input: 'Mr-Ming',
     };
   }
 
@@ -66,54 +67,75 @@ class Search extends Component {
         }));     
       })
       .then(function(items) {
-        const popularRepoByContributors = items.map((element, index) => {
-          return { 
-            contributors:  element.contributors,
-            repo: element.full_name,
-            url: element.html_url
-          }
-        });
+        fetch(ENDPOINT_FOR_ORGS + repo + '/public_members')
+          .then(response => response.json())
+          .then(function(response) {
+            let publicMembers;
 
-        let topInternalContributors = [];
-        let topExternalContributors = [];
-
-        items.forEach(function(parent) {
-          parent.contributor.forEach(function(child) {
-            let existingContributorIndex = -1;
-
-            if (child.type === 'User') {
-              var contributor = topInternalContributors;
+            if (response.message === 'Not Found') {
+              //  This isn't an organization but a member page
+              console.log(response);
+              publicMembers = [];
             } else {
-              var contributor = existingContributorIndex;
+              publicMembers = response.map((element) => {
+                return element.login;
+              })
             }
-
-            existingContributorIndex = contributor.findIndex(function(obj) {
-              return obj.contributor === child.login
+            
+            const popularRepoByContributors = items.map((element, index) => {
+              return { 
+                contributors:  element.contributors,
+                repo: element.full_name,
+                url: element.html_url
+              }
             });
 
-            if (existingContributorIndex === -1) {
-              contributor.push({
-              	repo: 1,
-              	contributor: child.login,
-              	url: child.html_url
-              })
-            } else {
-              contributor[existingContributorIndex] = {
-              	repo: contributor[existingContributorIndex].repo+1,
-              	contributor: child.login,
-              	url: child.html_url
-              }
-            }
-          });
-        });
+            let topInternalContributors = [];
+            let topExternalContributors = [];
 
-      	onHandlePopularRepoByContributors(popularRepoByContributors);
-      	onHandleTopInternalContributors(topInternalContributors);
-      	onHandleTopExternalContributors(topExternalContributors);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+            items.forEach(function(parent) {
+              parent.contributor.forEach(function(child) {
+                let existingContributorIndex = -1;
+                let contributorSelector;
+
+                if (publicMembers.includes(child.login)) {
+                  contributorSelector = topInternalContributors;
+                } else {
+                  contributorSelector = topExternalContributors;
+                }
+
+                existingContributorIndex = contributorSelector.findIndex(function(obj) {
+                  return obj.contributor === child.login
+                });
+
+                if (existingContributorIndex === -1) {
+                  contributorSelector.push({
+                    repo: 1,
+                    contributor: child.login,
+                    url: child.html_url
+                  })
+                } else {
+                  contributorSelector[existingContributorIndex] = {
+                    repo: contributorSelector[existingContributorIndex].repo+1,
+                    contributor: child.login,
+                    url: child.html_url
+                  }
+                }
+              });
+            });
+
+            onHandlePopularRepoByContributors(popularRepoByContributors);
+            onHandleTopInternalContributors(topInternalContributors);
+            onHandleTopExternalContributors(topExternalContributors);
+
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
 
   searchGithubApi = (url) => {
