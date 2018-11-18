@@ -1,21 +1,21 @@
-.RepoByForks {
+.TopInternalContributors {
     background-color: #e8f7de;
     border: 2px solid lightblue;
-    width: 48%;
-    padding-bottom: 5px;
+    float: right;
     min-height: 100px;
-    margin-top: 25px;
+    padding-bottom: 5px;
+    width: 48%;
 }
 
-.RepoByForks .Header {
+.TopInternalContributors .Header {
     border-bottom: 2px solid lightblue;
+    color: green;
     padding-left: 6px;
     padding-top: 5px;
     padding-bottom: 5px;
-    color: green;
 }
 
-.RepoByForks .Result {
+.TopInternalContributors .Result {
 	line-height: 20px;
 	padding-left: 6px;
 }

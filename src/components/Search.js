@@ -47,7 +47,7 @@ class Search extends Component {
 	  });
   }
 
-  getPopularRepoByContributors(repo) {
+  getRepoWithContributorData(repo) {
   	const { onHandlePopularRepoByContributors } = this.props;
 
     fetch(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM)
@@ -99,7 +99,7 @@ class Search extends Component {
 
 		//this.getPopularRepoByStars(input);
 		//this.getPopularRepoByForks(input);
-		this.getPopularRepoByContributors(input);
+		this.getRepoWithContributorData(input);
 	}
 
 	render() {

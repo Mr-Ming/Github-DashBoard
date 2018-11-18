@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Search from './components/Search';
 import RepoByStars from './components/RepoByStars';
 import RepoByForks from './components/RepoByForks';
+import TopInternalContributors from './components/TopInternalContributors';
 import RepoByContributors from './components/RepoByContributors';
 import './css/App.css';
 
@@ -46,7 +47,11 @@ class App extends Component {
           onHandlePopularRepoByForks = { this.handlePopularRepoByForks }
           onHandlePopularRepoByContributors = { this.handlePopularRepoByContributors }
         />
-        <RepoByStars result = { popularRepoByStars }/>
+        <div className="Separator">
+          <RepoByStars result = { popularRepoByStars }/>
+          <TopInternalContributors/>
+        </div>
+        
         <RepoByForks result = { popularRepoByForks }/>
         <RepoByContributors result = { popularRepoByContributors }/>
       </div>
