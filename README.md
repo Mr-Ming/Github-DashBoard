@@ -8,7 +8,9 @@ Contributors
 Top internal contributors: these should be the users who are public members of the organization ranked by their contributions to repositories belonging to the organization.
 (buggy) Top external contributions: same as internal contributors, except for users who are not public members of the organization.
 
-![Alt text](https://user-images.githubusercontent.com/2894340/48675109-c1f0cf80-eb22-11e8-9a18-139d067dd9fe.png "Image")
+![Alt text](https://user-images.githubusercontent.com/2894340/48678718-009f7d80-eb55-11e8-9269-50299bfeb248.png "Image")
+
+* One important note: If you use a username instead of an organization name then the contributors will show up as external contributors
 
 ## To Run The Program
 1. Clone this branch
@@ -16,5 +18,5 @@ Top internal contributors: these should be the users who are public members of t
 3. `Run npm install && npm start`
 
 ## Future Work
-Need to fix top external contributors
+Need to add notification (if someone uses a username instead of an organization name)
 Need to add unit test and integration test
