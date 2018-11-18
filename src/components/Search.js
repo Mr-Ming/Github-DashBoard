@@ -11,7 +11,7 @@ class Search extends Component {
 	constructor(props) {
     super(props);
     this.state = {
-    	input: '',
+    	input: 'Mr-Ming',
     };
   }
 
@@ -48,12 +48,14 @@ class Search extends Component {
   }
 
   getPopularRepoByContributors = (repo) => {
+  	
   	const { onHandlePopularRepoByContributors } = this.props;
 
   	var popularRepoByContributor = [];
 
   	this.searchGithubApi(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM).then((result) => {
- 			result.items.forEach(function(element) {
+ 			
+ 			return Promise.all(result.items.forEach(function(element) {
  				const url = ENDPOINT_FOR_REPO + element.full_name + '/contributors';
 
  				fetch(url)
@@ -63,12 +65,14 @@ class Search extends Component {
 		  				'contributors': json.length,
 		  				'repo': element.full_name,
 		  				'url': element.html_url
-		  			})
+	  				})
 		  		})
- 			});
+			}))
+		});
 
- 			onHandlePopularRepoByContributors(popularRepoByContributor);
-	  });
+ 			//onHandlePopularRepoByContributors(popularRepoByContributor);
+
+	  console.log (popularRepoByContributor);
   }
 
   searchGithubApi = (url) => {
@@ -88,8 +92,8 @@ class Search extends Component {
 
 		event.preventDefault();
 
-		this.getPopularRepoByStars(input);
-		this.getPopularRepoByForks(input);
+		//this.getPopularRepoByStars(input);
+		//this.getPopularRepoByForks(input);
 		this.getPopularRepoByContributors(input);
 	}
 
