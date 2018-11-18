@@ -102,7 +102,6 @@ class Search extends Component {
 						type="textbox"
 						placeholder="facebook"
 						onChange={this.handleInputChange}
-						defaultValue="Mr-Ming"
 	       	/>
 	       	<button>Submit</button>
        	</form>
