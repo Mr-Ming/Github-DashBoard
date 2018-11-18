@@ -11,7 +11,7 @@ class Search extends Component {
 	constructor(props) {
     super(props);
     this.state = {
-    	input: 'Mr-Ming',
+    	input: '',
     };
   }
 
@@ -48,7 +48,7 @@ class Search extends Component {
   }
 
   getRepoWithContributorData(repo) {
-  	const { onHandlePopularRepoByContributors } = this.props;
+  	const { onHandlePopularRepoByContributors, onHandleTopInternalContributors, onHandleTopExternalContributors } = this.props;
 
     fetch(ENDPOINT_FOR_POPULAR_REPO + repo + SORT_BY_FORKS_QUERY_PARAM)
     .then(response => response.json())
@@ -60,12 +60,13 @@ class Search extends Component {
         	.then(response => response.json())
           .then(function(response) {
             item.contributors = response.length;
+            item.contributor = response;
             return item
           });
       }));     
     })
     .then(function(items) {
-    	const fullData = items.map((element, index) => {
+    	const popularRepoByContributors = items.map((element, index) => {
     		return { 
     			contributors:  element.contributors,
     			repo: element.full_name,
@@ -73,7 +74,44 @@ class Search extends Component {
     		}
     	});
 
-    	onHandlePopularRepoByContributors(fullData);
+    	let topInternalContributors = [];
+    	let topExternalContributors = [];
+
+    	items.forEach(function(parent) {
+    		parent.contributor.forEach(function(child) {
+    			
+    			let existingContributorIndex = -1;
+
+    			if (child.type === 'User') {
+    				var contributor = topInternalContributors;
+    			} else {
+    				var contributor = existingContributorIndex;
+    			}
+
+    			existingContributorIndex = contributor.findIndex(function(obj) {
+    				return obj.contributor === child.login
+    			});
+
+    			if (existingContributorIndex === -1) {
+    				contributor.push({
+	    				repo: 1,
+	    				contributor: child.login,
+	    				url: child.html_url
+  					})
+    			} else {
+    				contributor[existingContributorIndex] = {
+    					repo: contributor[existingContributorIndex].repo+1,
+    					contributor: child.login,
+    					url: child.html_url
+    				}
+    			}
+    			
+    		});
+    	});
+
+    	onHandlePopularRepoByContributors(popularRepoByContributors);
+    	onHandleTopInternalContributors(topInternalContributors);
+    	onHandleTopExternalContributors(topExternalContributors);
     })
     .catch((error) => {
       console.log(error);
@@ -97,8 +135,8 @@ class Search extends Component {
 
 		event.preventDefault();
 
-		//this.getPopularRepoByStars(input);
-		//this.getPopularRepoByForks(input);
+		this.getPopularRepoByStars(input);
+		this.getPopularRepoByForks(input);
 		this.getRepoWithContributorData(input);
 	}
 

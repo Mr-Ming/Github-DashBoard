@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import '../css/TopInternalContributors.css';
+import '../css/TopExternalContributors.css';
 
-class TopInternalContributors extends Component {
+class TopExternalContributors extends Component {
 	render() {
 		const { result } = this.props;
 		return (
-			<div className="TopInternalContributors">
+			<div className="TopExternalContributors">
 				<div className="Header">
-					Top Internal Contributors
+					Top External Contributors
 				</div>
-				{result.length > 0 && 
+				{result.length == 0 ? "None" : 
 					result.map((element, i) => {
 						return (
-							<div className="Result" key={"internal_contributors__"+i}>
+							<div className="Result" key={"external_contributors__"+i}>
 								{i+1}: <a href="{ element.url }"> { element.contributor }</a> ({ element.repo } Repos) 
 							</div>
 						)
@@ -23,4 +23,4 @@ class TopInternalContributors extends Component {
 	}
 }
 
-export default TopInternalContributors;
+export default TopExternalContributors;
