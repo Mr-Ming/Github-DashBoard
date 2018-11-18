@@ -2,11 +2,11 @@
 The dashboard provide the following summarizations:
 
 Most popular repositories by:
-Stars
-Forks
-Contributors
-Top internal contributors: these should be the users who are public members of the organization ranked by their contributions to repositories belonging to the organization.
-(buggy) Top external contributions: same as internal contributors, except for users who are not public members of the organization.
+1. Stars
+2. Forks
+3. Contributors
+4. Top internal contributors: these should be the users who are public members of the organization ranked by their contributions to repositories belonging to the organization.
+5. Top external contributions: same as internal contributors, except for users who are not public members of the organization.
 
 ![Alt text](https://user-images.githubusercontent.com/2894340/48678718-009f7d80-eb55-11e8-9269-50299bfeb248.png "Image")
 
@@ -18,5 +18,6 @@ Top internal contributors: these should be the users who are public members of t
 3. `Run npm install && npm start`
 
 ## Future Work
-Need to add notification (if someone uses a username instead of an organization name)
-Need to add unit test and integration test
+1. Need to add notification (if someone uses a username instead of an organization name)
+2. Need to add unit test and integration test
+3. Need to improve UI
