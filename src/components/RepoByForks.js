@@ -4,10 +4,11 @@ import '../css/RepoByForks.css';
 class RepoByForks extends Component {
 	render() {
 		const { result } = this.props;
+
 		return (
 			<div className="RepoByForks">
 				<div className="Header">
-					Popular Repo By Forks
+				Popular Repo By Forks
 				</div>
 				{result.length > 0 && 
 					result.map((element, i) => {

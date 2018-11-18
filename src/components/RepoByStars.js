@@ -13,7 +13,7 @@ class RepoByStars extends Component {
 					result.map((element, i) => {
 						return (
 							<div className="Result" key={"stars__"+i}>
-								{i+1}: <a href="{ url }">{ element.repo }</a> ({ element.stars }) 
+							{i+1}: <a href="{ url }">{ element.repo }</a> ({ element.stars }) 
 							</div>
 						)
 					})
