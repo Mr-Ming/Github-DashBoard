@@ -167,7 +167,7 @@ class Search extends Component {
           Github Organization Name:
           <input
             type="textbox"
-            placeholder="facebook"
+            placeholder="Please enter something... like 'facebook'"
             onChange={this.handleInputChange}
           />
           <button>Submit</button>
