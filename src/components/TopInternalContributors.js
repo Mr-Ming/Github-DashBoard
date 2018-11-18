@@ -13,7 +13,7 @@ class TopInternalContributors extends Component {
           result.map((element, i) => {
             return (
               <div className="Result" key={"internal_contributors__"+i}>
-                {i+1}: <a href="{ element.url }"> { element.contributor }</a> ({ element.repo } Repos) 
+                {i+1}: <a href={ element.url }> { element.contributor }</a> ({ element.repo } Repos) 
               </div>
             )
           })
